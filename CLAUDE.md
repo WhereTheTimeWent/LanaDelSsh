@@ -15,8 +15,8 @@ dotnet build
 # Run
 dotnet run --project LanaDelSsh/LanaDelSsh.csproj
 
-# Publish (Windows x64)
-dotnet publish -c Release -r win-x64
+# Publish (Windows x64, self-contained, R2R + trimmed)
+dotnet publish LanaDelSsh/LanaDelSsh.csproj -c Release -r win-x64 --self-contained -p:PublishReadyToRun=true -p:PublishTrimmed=true -o publish/win-x64
 
 # Run all tests
 dotnet test
@@ -82,6 +82,32 @@ Dialogs (`ConnectionEditDialog`, `SettingsDialog`) are opened from `MainWindow.a
 - **macOS**: writes a temp shell script, opens with `Terminal.app`
 - **Linux**: tries `x-terminal-emulator`, `gnome-terminal`, `xfce4-terminal`, `konsole`, `xterm` in order
 
+## Releasing (Velopack)
+
+The app uses [Velopack](https://velopack.io) for installation and auto-updates. Updates are distributed via GitHub Releases. The installed app silently checks for updates on startup (`MainWindowViewModel.CheckForUpdatesAsync`) and downloads them in the background; the update is applied automatically on the next launch via Velopack's auto-apply-on-startup.
+
+**`VelopackApp.Build().Run()` must remain the very first call in `Program.Main()`**, before the mutex and before Avalonia initialises. It intercepts install/update/uninstall lifecycle hooks and exits early when needed.
+
+### Publishing a release
+
+```bash
+# 1. Publish self-contained (R2R + trimmed)
+dotnet publish LanaDelSsh/LanaDelSsh.csproj -c Release -r win-x64 --self-contained \
+  -p:PublishReadyToRun=true -p:PublishTrimmed=true -o publish/win-x64
+
+# 2. Pack (keep Releases/ between versions — needed for delta generation)
+vpk pack --packId LanaDelSsh --packTitle "Lana Del Ssh" --packVersion 1.0.0 \
+  --packDir publish/win-x64 --mainExe LanaDelSsh.exe --icon LanaDelSsh/lana-del-ssh.ico
+
+# 3. Upload to GitHub Releases
+gh release create v1.0.0 Releases/* --title "v1.0.0"
+```
+
+For subsequent releases, keep the previous `.nupkg` in `Releases/` so Velopack can generate a delta package. If the folder is lost, recover with:
+```bash
+gh release download v1.0.0 --pattern "*.nupkg" --dir Releases
+```
+
 ## Key Dependencies
 
 | Package | Purpose |
@@ -89,6 +115,7 @@ Dialogs (`ConnectionEditDialog`, `SettingsDialog`) are opened from `MainWindow.a
 | `Avalonia 11.3.12` + `Avalonia.Themes.Fluent` | UI framework with Fluent theme |
 | `CommunityToolkit.Mvvm 8.4.1` | MVVM source generation |
 | `MessageBox.Avalonia 3.3.1.1` | Cross-platform message boxes |
+| `Velopack 0.0.1298` | Installer + auto-update framework |
 
 ## Code Conventions
 
