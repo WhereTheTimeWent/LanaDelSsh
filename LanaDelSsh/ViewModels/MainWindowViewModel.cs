@@ -1,7 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using LanaDelSsh.Localization;
 using LanaDelSsh.Services;
+using System;
 using System.Threading.Tasks;
+using Velopack;
+using Velopack.Sources;
 
 namespace LanaDelSsh.ViewModels;
 
@@ -33,5 +36,28 @@ public partial class MainWindowViewModel : ViewModelBase
 
         await Settings.LoadAsync(appSettings).ConfigureAwait(false);
         await SavedConnections.LoadAsync().ConfigureAwait(false);
+
+        _ = CheckForUpdatesAsync();
+    }
+
+    private static async Task CheckForUpdatesAsync()
+    {
+        try
+        {
+            var mgr = new UpdateManager(new GithubSource("https://github.com/WhereTheTimeWent/LanaDelSsh", null, false));
+            if (!mgr.IsInstalled)
+                return;
+
+            var update = await mgr.CheckForUpdatesAsync().ConfigureAwait(false);
+            if (update is null)
+                return;
+
+            await mgr.DownloadUpdatesAsync(update).ConfigureAwait(false);
+            // Update will be applied automatically on next launch via Velopack's auto-apply-on-startup
+        }
+        catch (Exception)
+        {
+            // Silently ignore update errors (no internet, no releases yet, etc.)
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using System;
 using System.Threading;
+using Velopack;
 
 namespace LanaDelSsh;
 
@@ -12,6 +13,9 @@ internal sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        // Must be first: handles install/update/uninstall hooks and exits early when needed
+        VelopackApp.Build().Run();
+
         using var mutex = new Mutex(initiallyOwned: true, "Global\\LanaDelSsh-SingleInstance", out bool acquired);
         if (!acquired)
             return;
