@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="lana-del-ssh.ico" />
   </ItemGroup>
 
