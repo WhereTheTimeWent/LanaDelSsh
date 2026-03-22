@@ -7,7 +7,6 @@
 		Title="{Binding Source={x:Static loc:Loc.Instance}, Path=AppTitle}"
 		Width="550" Height="620"
 		MinWidth="450" MinHeight="420"
-		WindowStartupLocation="CenterScreen"
 		Background="{DynamicResource AppWindowBackground}">
 
 	<Window.Styles>
