@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LanaDelSsh/LanaDelSsh.csproj" />
+  <Project Path="LanaDelSsh.Tests/LanaDelSsh.Tests.csproj" />
+</Solution>

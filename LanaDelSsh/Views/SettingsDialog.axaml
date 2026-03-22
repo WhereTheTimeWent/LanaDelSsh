@@ -1,0 +1,110 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:LanaDelSsh.ViewModels"
+        xmlns:loc="using:LanaDelSsh.Localization"
+        x:Class="LanaDelSsh.Views.SettingsDialog"
+        x:DataType="vm:SettingsViewModel"
+        Title="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Title}"
+        Width="500" Height="520"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        ShowInTaskbar="False"
+        Background="{DynamicResource AppWindowBackground}">
+
+    <Window.Styles>
+        <Style Selector="TextBlock.sectionLabel">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid Margin="24" RowDefinitions="Auto,16,Auto,16,Auto,16,Auto,Auto,16,Auto,*,Auto">
+
+        <!-- Ignore Certificates -->
+        <CheckBox Grid.Row="0"
+                  IsChecked="{Binding IgnoreCertificates}"
+                  Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_IgnoreCertificates}"/>
+
+        <!-- Theme -->
+        <StackPanel Grid.Row="2" Orientation="Vertical" Spacing="4">
+            <TextBlock Classes="sectionLabel"
+                       Text="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Theme}"/>
+            <ComboBox SelectedIndex="{Binding SelectedThemeIndex}" HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Theme_Auto}"/>
+                <ComboBoxItem Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Theme_Light}"/>
+                <ComboBoxItem Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Theme_Dark}"/>
+                <ComboBoxItem Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Theme_OceanBlvd}"/>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- Language -->
+        <StackPanel Grid.Row="4" Orientation="Vertical" Spacing="4">
+            <TextBlock Classes="sectionLabel"
+                       Text="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Language}"/>
+            <ComboBox SelectedIndex="{Binding SelectedLanguageIndex}" HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Language_Auto}"/>
+                <ComboBoxItem Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Language_English}"/>
+                <ComboBoxItem Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Language_German}"/>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- Window -->
+        <StackPanel Grid.Row="6" Orientation="Vertical" Spacing="4">
+            <TextBlock Classes="sectionLabel"
+                       Text="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Window}"/>
+            <Button Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_ResetWindowSize}"
+                    HorizontalAlignment="Left"
+                    Click="OnResetWindowSizeClick"/>
+        </StackPanel>
+
+        <!-- Linux Terminal (only visible on Linux; margin collapses with it on other platforms) -->
+        <StackPanel Grid.Row="7" Orientation="Vertical" Spacing="4"
+                    Margin="0,16,0,0"
+                    IsVisible="{x:Static vm:SettingsViewModel.IsLinux}">
+            <TextBlock Classes="sectionLabel"
+                       Text="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_LinuxTerminal}"/>
+            <TextBox Text="{Binding LinuxTerminal}"
+                     Watermark="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_LinuxTerminal_Placeholder}"/>
+        </StackPanel>
+
+        <!-- Connections File -->
+        <StackPanel Grid.Row="9" Orientation="Vertical" Spacing="4">
+            <TextBlock Classes="sectionLabel"
+                       Text="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_ConnectionsFile}"/>
+            <TextBlock Text="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_ConnectionsFile_Description}"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                       FontSize="12"
+                       TextWrapping="Wrap"
+                       Margin="0,-2,0,4"/>
+            <Grid ColumnDefinitions="*,6,Auto">
+                <TextBox Grid.Column="0"
+                         Text="{Binding ConnectionsFolder}"
+                         Watermark="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_ConnectionsFile_Placeholder}">
+                    <TextBox.InnerRightContent>
+                        <Button Classes="clearField"
+                                Content="✕"
+                                Command="{Binding ClearConnectionsFolderCommand}"
+                                IsVisible="{Binding ConnectionsFolder, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                    </TextBox.InnerRightContent>
+                </TextBox>
+                <Button Grid.Column="2"
+                        Content="..."
+                        MinWidth="36"
+                        Click="OnBrowseConnectionsFileClick"/>
+            </Grid>
+            <TextBlock Text="{Binding ConnectionsFolderError}"
+                       IsVisible="{Binding ConnectionsFolderError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                       FontSize="12"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- Close Button -->
+        <Button Grid.Row="11"
+                Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Close}"
+                HorizontalAlignment="Right"
+                Width="100"
+                IsCancel="True"
+                Click="OnCloseClick"/>
+    </Grid>
+</Window>

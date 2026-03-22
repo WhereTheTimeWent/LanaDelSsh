@@ -1,0 +1,205 @@
+<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:LanaDelSsh.ViewModels"
+		xmlns:loc="using:LanaDelSsh.Localization"
+		x:Class="LanaDelSsh.Views.MainWindow"
+		x:DataType="vm:MainWindowViewModel"
+		Title="{Binding Source={x:Static loc:Loc.Instance}, Path=AppTitle}"
+		Width="550" Height="620"
+		MinWidth="450" MinHeight="420"
+		WindowStartupLocation="CenterScreen"
+		Background="{DynamicResource AppWindowBackground}">
+
+	<Window.Styles>
+		<!-- Section titles -->
+		<Style Selector="TextBlock.sectionTitle">
+			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Margin" Value="0,0,0,10"/>
+			<Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
+		</Style>
+		<!-- Sidebar buttons -->
+		<Style Selector="Button.sidebarBtn">
+			<Setter Property="Padding" Value="8,5"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		</Style>
+		<!-- Validation error -->
+		<Style Selector="TextBlock.validationError">
+			<Setter Property="Foreground" Value="Red"/>
+			<Setter Property="FontSize" Value="11"/>
+			<Setter Property="Margin" Value="0,2,0,0"/>
+		</Style>
+		<!-- Connection list item -->
+		<Style Selector="ListBoxItem">
+			<Setter Property="Padding" Value="8,4"/>
+		</Style>
+	</Window.Styles>
+
+	<Grid Margin="16" RowDefinitions="Auto,*">
+
+		<!-- Quick Connect Section -->
+		<StackPanel Grid.Row="0" Margin="0,0,0,20"
+					x:DataType="vm:QuickConnectViewModel" DataContext="{Binding QuickConnect}">
+
+			<TextBlock Classes="sectionTitle"
+					   Text="{Binding Source={x:Static loc:Loc.Instance}, Path=QuickConnect_Title}"/>
+
+			<Grid ColumnDefinitions="*,16,Auto,8,Auto,16,Auto">
+
+				<!-- Host TextBox -->
+				<TextBox Grid.Column="0"
+						 Text="{Binding HostInput}"
+						 Watermark="{Binding Source={x:Static loc:Loc.Instance}, Path=QuickConnect_HostPlaceholder}"
+						 KeyDown="OnQuickConnectKeyDown">
+					<TextBox.InnerRightContent>
+						<Button Classes="clearField"
+								Content="✕"
+								Command="{Binding ClearHostInputCommand}"
+								IsVisible="{Binding HostInput, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+					</TextBox.InnerRightContent>
+				</TextBox>
+
+				<!-- Port Label -->
+				<TextBlock Grid.Column="2"
+						   Text="{Binding Source={x:Static loc:Loc.Instance}, Path=QuickConnect_Port}"
+						   FontSize="12"
+						   VerticalAlignment="Center"
+						   Opacity="0.7"/>
+
+				<!-- Port TextBox -->
+				<TextBox Grid.Column="4"
+						 x:Name="PortTextBox"
+						 Text="{Binding PortText, Mode=TwoWay}"
+						 TextChanged="OnPortTextChanged"/>
+
+				<!-- Connect Button -->
+				<Button Grid.Column="6"
+						Content="{Binding Source={x:Static loc:Loc.Instance}, Path=QuickConnect_Connect}"
+						Classes="accent"
+						IsEnabled="{Binding IsHostValid}"
+						Click="OnQuickConnectClick"
+						Padding="14,6"/>
+			</Grid>
+
+			<!-- Validation error -->
+			<TextBlock Classes="validationError"
+					   Text="{Binding Source={x:Static loc:Loc.Instance}, Path=QuickConnect_ValidationError}"
+					   IsVisible="{Binding ShowValidationError}"/>
+		</StackPanel>
+
+		<!-- Saved Connections Section -->
+		<Grid Grid.Row="1" RowDefinitions="Auto,*"
+			  x:DataType="vm:SavedConnectionsViewModel" DataContext="{Binding SavedConnections}">
+
+			<!-- Title -->
+			<TextBlock Grid.Row="0" Classes="sectionTitle"
+					   Text="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Title}"/>
+
+			<!-- List + Buttons -->
+			<Grid Grid.Row="1" ColumnDefinitions="*,16,Auto" RowDefinitions="Auto,*">
+
+				<!-- Search -->
+				<TextBox Grid.Row="0" Grid.Column="0"
+						 Text="{Binding SearchText}"
+						 Watermark="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Search}"
+						 Margin="0,0,0,8">
+					<TextBox.InnerRightContent>
+						<Button Classes="clearField"
+								Content="✕"
+								Command="{Binding ClearSearchCommand}"
+								IsVisible="{Binding SearchText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+					</TextBox.InnerRightContent>
+				</TextBox>
+
+				<!-- Connection List -->
+				<ListBox Grid.Row="1" Grid.Column="0"
+						 x:Name="ConnectionListBox"
+						 ItemsSource="{Binding FilteredConnections}"
+						 SelectedItem="{Binding SelectedConnection}"
+						 KeyDown="OnListBoxKeyDown"
+						 DoubleTapped="OnListBoxDoubleTapped"
+						 DragDrop.AllowDrop="True">
+
+					<ListBox.ContextMenu>
+						<ContextMenu x:DataType="vm:SavedConnectionsViewModel">
+							<MenuItem Header="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Edit}"
+									  IsEnabled="{Binding HasSelection}"
+									  Click="OnEditClick"/>
+							<MenuItem Header="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Duplicate}"
+									  IsEnabled="{Binding HasSelection}"
+									  Click="OnDuplicateClick"/>
+							<Separator/>
+							<MenuItem Header="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Connect}"
+									  IsEnabled="{Binding HasSelection}"
+									  Click="OnConnectClick"/>
+							<MenuItem Header="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Ping}"
+									  IsEnabled="{Binding HasSelection}"
+									  Click="OnPingClick"/>
+							<Separator/>
+							<MenuItem Header="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Delete}"
+									  IsEnabled="{Binding HasSelection}"
+									  Click="OnDeleteClick"/>
+						</ContextMenu>
+					</ListBox.ContextMenu>
+
+					<ListBox.ItemTemplate>
+						<DataTemplate x:DataType="vm:SshConnectionViewModel">
+							<TextBlock FontSize="12" TextTrimming="CharacterEllipsis">
+								<Run Text="{Binding Name}" FontWeight="SemiBold"/>
+								<Run Text=" · "/>
+								<Run Text="{Binding Host}"
+									 Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+							</TextBlock>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+
+				<!-- Sidebar Buttons -->
+				<Grid Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" RowDefinitions="Auto,*,Auto">
+					<StackPanel Grid.Row="0" Spacing="4">
+						<!-- Management -->
+						<Button Classes="sidebarBtn"
+								Content="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Add}"
+								Click="OnAddClick"/>
+						<Button Classes="sidebarBtn"
+								Content="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Edit}"
+								IsEnabled="{Binding HasSelection}"
+								Click="OnEditClick"/>
+						<Button Classes="sidebarBtn"
+								Content="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Duplicate}"
+								IsEnabled="{Binding HasSelection}"
+								Click="OnDuplicateClick"/>
+						<Button Classes="sidebarBtn"
+								Content="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Delete}"
+								IsEnabled="{Binding HasSelection}"
+								Click="OnDeleteClick"/>
+
+						<!-- Spacer -->
+						<Border Height="8"/>
+
+						<!-- Actions -->
+						<Button Classes="sidebarBtn"
+								Content="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Connect}"
+								IsEnabled="{Binding HasSelection}"
+								Click="OnConnectClick"/>
+						<Button Classes="sidebarBtn"
+								Content="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Ping}"
+								IsEnabled="{Binding HasSelection}"
+								Click="OnPingClick"/>
+					</StackPanel>
+
+					<!-- Settings + Close -->
+					<StackPanel Grid.Row="2" Spacing="4">
+						<Button Classes="sidebarBtn"
+								Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings}"
+								Click="OnSettingsClick"/>
+						<Button Classes="sidebarBtn"
+								Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Close}"
+								Click="OnCloseWindowClick"/>
+					</StackPanel>
+				</Grid>
+
+			</Grid>
+		</Grid>
+	</Grid>
+</Window>

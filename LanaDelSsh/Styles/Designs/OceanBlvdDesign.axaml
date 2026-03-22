@@ -1,0 +1,52 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Dark: Did you know that there's a tunnel under Ocean Blvd
+        Color palette extracted from the Lana Del Rey album cover:
+          - Deep dark navy backgrounds (the near-black tones of the photograph)
+          - Warm golden accent (the color of the album title typography)
+          - Desaturated blue-gray chrome and text tones
+    -->
+
+    <!-- Accent: warm gold from the album title typography -->
+    <Color x:Key="SystemAccentColor">#C8A84B</Color>
+    <Color x:Key="SystemAccentColorDark1">#AC8C32</Color>
+    <Color x:Key="SystemAccentColorDark2">#90721E</Color>
+    <Color x:Key="SystemAccentColorDark3">#74590E</Color>
+    <Color x:Key="SystemAccentColorLight1">#D8B85C</Color>
+    <Color x:Key="SystemAccentColorLight2">#E6CA76</Color>
+    <Color x:Key="SystemAccentColorLight3">#F2DC96</Color>
+
+    <!-- Chrome: deep navy tones from the dark areas of the photograph -->
+    <Color x:Key="SystemChromeLowColor">#0D1219</Color>
+    <Color x:Key="SystemChromeMediumColor">#131A26</Color>
+    <Color x:Key="SystemChromeMediumLowColor">#1C2B3F</Color>
+    <Color x:Key="SystemChromeHighColor">#3D4F68</Color>
+    <Color x:Key="SystemChromeWhiteColor">#C9C5BD</Color>
+    <Color x:Key="SystemChromeBlackHighColor">#FF000000</Color>
+    <Color x:Key="SystemChromeBlackMediumHighColor">#CC000000</Color>
+    <Color x:Key="SystemChromeBlackMediumColor">#99000000</Color>
+    <Color x:Key="SystemChromeBlackLowColor">#33000000</Color>
+
+    <!-- Base: desaturated text and surface tones -->
+    <Color x:Key="SystemBaseHighColor">#C9C5BD</Color>
+    <Color x:Key="SystemBaseMediumHighColor">#B0AEAD</Color>
+    <Color x:Key="SystemBaseMediumColor">#8A95A8</Color>
+    <Color x:Key="SystemBaseMediumLowColor">#66B0AEAD</Color>
+    <Color x:Key="SystemBaseLowColor">#338A95A8</Color>
+
+    <!-- Alt: content area backgrounds (dark navy) -->
+    <Color x:Key="SystemAltHighColor">#0D1219</Color>
+    <Color x:Key="SystemAltMediumHighColor">#CC0D1219</Color>
+    <Color x:Key="SystemAltMediumColor">#990D1219</Color>
+    <Color x:Key="SystemAltMediumLowColor">#660D1219</Color>
+    <Color x:Key="SystemAltLowColor">#330D1219</Color>
+
+    <!-- List highlight tones -->
+    <Color x:Key="SystemListLowColor">#19C8A84B</Color>
+    <Color x:Key="SystemListMediumColor">#33C8A84B</Color>
+    <Color x:Key="SystemRevealListLowColor">#19C8A84B</Color>
+    <Color x:Key="SystemRevealListMediumColor">#33C8A84B</Color>
+
+</ResourceDictionary>

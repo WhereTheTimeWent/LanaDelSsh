@@ -1,0 +1,74 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:LanaDelSsh.ViewModels"
+        xmlns:loc="using:LanaDelSsh.Localization"
+        x:Class="LanaDelSsh.Views.ConnectionEditDialog"
+        x:DataType="vm:ConnectionEditViewModel"
+        Title="{Binding DialogTitle}"
+        Width="360" Height="290"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        ShowInTaskbar="False"
+        Background="{DynamicResource AppWindowBackground}">
+
+    <Window.Styles>
+        <Style Selector="TextBlock.label">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Width" Value="60"/>
+        </Style>
+        <Style Selector="TextBlock.validationError">
+            <Setter Property="Foreground" Value="Red"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,*,Auto">
+
+        <!-- Name -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Classes="label"
+                       Text="{Binding Source={x:Static loc:Loc.Instance}, Path=ConnectionEdit_Name}"/>
+            <TextBox Text="{Binding Name}"/>
+        </DockPanel>
+
+        <!-- Host -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,10">
+            <DockPanel>
+                <TextBlock Classes="label"
+                           Text="{Binding Source={x:Static loc:Loc.Instance}, Path=ConnectionEdit_Host}"/>
+                <TextBox Text="{Binding Host}"
+                         Watermark="user@host"/>
+            </DockPanel>
+            <TextBlock Classes="validationError"
+                       Text="{Binding Source={x:Static loc:Loc.Instance}, Path=QuickConnect_ValidationError}"
+                       IsVisible="{Binding ShowHostError}"
+                       Margin="68,2,0,0"/>
+        </StackPanel>
+
+        <!-- Port -->
+        <DockPanel Grid.Row="2" Margin="0,0,0,10">
+            <TextBlock Classes="label"
+                       Text="{Binding Source={x:Static loc:Loc.Instance}, Path=ConnectionEdit_Port}"/>
+            <NumericUpDown Value="{Binding Port}"
+                           Minimum="1" Maximum="65535"
+                           FormatString="0"
+                           Increment="1"/>
+        </DockPanel>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="{Binding Source={x:Static loc:Loc.Instance}, Path=ConnectionEdit_Cancel}"
+                    Width="90"
+                    IsCancel="True"
+                    Click="OnCancelClick"/>
+            <Button Content="{Binding Source={x:Static loc:Loc.Instance}, Path=ConnectionEdit_Ok}"
+                    Width="90"
+                    IsDefault="True"
+                    IsEnabled="{Binding IsValid}"
+                    Click="OnOkClick"
+                    Classes="accent"/>
+        </StackPanel>
+    </Grid>
+</Window>

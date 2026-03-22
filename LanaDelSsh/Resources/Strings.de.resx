@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="xml:space" msdata:IsReadOnly="true"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter</value>
+  </resheader>
+
+  <!-- App / Window -->
+  <data name="AppTitle" xml:space="preserve">
+    <value>Lana Del Ssh</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+
+  <!-- Quick Connect -->
+  <data name="QuickConnect_Title" xml:space="preserve">
+    <value>Schnellverbindung</value>
+  </data>
+  <data name="QuickConnect_HostPlaceholder" xml:space="preserve">
+    <value>benutzer@host</value>
+  </data>
+  <data name="QuickConnect_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="QuickConnect_Connect" xml:space="preserve">
+    <value>Verbinden</value>
+  </data>
+  <data name="QuickConnect_ValidationError" xml:space="preserve">
+    <value>Bitte Benutzername angeben, z. B. root@10.0.0.1</value>
+  </data>
+
+  <!-- Saved Connections -->
+  <data name="SavedConnections_Title" xml:space="preserve">
+    <value>Gespeicherte Verbindungen</value>
+  </data>
+  <data name="SavedConnections_Add" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="SavedConnections_Edit" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="SavedConnections_Delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="SavedConnections_Duplicate" xml:space="preserve">
+    <value>Duplizieren</value>
+  </data>
+  <data name="SavedConnections_Connect" xml:space="preserve">
+    <value>Verbinden</value>
+  </data>
+  <data name="SavedConnections_Ping" xml:space="preserve">
+    <value>Ping</value>
+  </data>
+  <data name="SavedConnections_Search" xml:space="preserve">
+    <value>Nach Name oder Host suchen…</value>
+  </data>
+  <data name="SavedConnections_Empty" xml:space="preserve">
+    <value>Keine gespeicherten Verbindungen. Klicke auf Hinzufügen.</value>
+  </data>
+
+  <!-- Connection Edit Dialog -->
+  <data name="ConnectionEdit_Title_Add" xml:space="preserve">
+    <value>Verbindung hinzufügen</value>
+  </data>
+  <data name="ConnectionEdit_Title_Edit" xml:space="preserve">
+    <value>Verbindung bearbeiten</value>
+  </data>
+  <data name="ConnectionEdit_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ConnectionEdit_Host" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="ConnectionEdit_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="ConnectionEdit_Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ConnectionEdit_Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+
+  <!-- Confirm Dialog -->
+  <data name="Confirm_Delete_Title" xml:space="preserve">
+    <value>Verbindung löschen</value>
+  </data>
+  <data name="Confirm_Delete_Message" xml:space="preserve">
+    <value>'{0}' wirklich löschen?</value>
+  </data>
+  <data name="Confirm_Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="Confirm_No" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+
+  <!-- Settings Dialog -->
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Settings_IgnoreCertificates" xml:space="preserve">
+    <value>Host-Schlüsselprüfung ignorieren (fügt -o StrictHostKeyChecking=no hinzu)</value>
+  </data>
+  <data name="Settings_Theme" xml:space="preserve">
+    <value>Design</value>
+  </data>
+  <data name="Settings_Theme_Auto" xml:space="preserve">
+    <value>Automatisch (System)</value>
+  </data>
+  <data name="Settings_Theme_Dark" xml:space="preserve">
+    <value>Dunkel</value>
+  </data>
+  <data name="Settings_Theme_Light" xml:space="preserve">
+    <value>Hell</value>
+  </data>
+  <data name="Settings_Theme_OceanBlvd" xml:space="preserve">
+    <value>Dunkel: Did you know that there's a tunnel under Ocean Blvd</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="Settings_Language_Auto" xml:space="preserve">
+    <value>Automatisch (Systemsprache)</value>
+  </data>
+  <data name="Settings_Language_English" xml:space="preserve">
+    <value>Englisch</value>
+  </data>
+  <data name="Settings_Language_German" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="Settings_Close" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="Settings_Window" xml:space="preserve">
+    <value>Fenster</value>
+  </data>
+  <data name="Settings_ResetWindowSize" xml:space="preserve">
+    <value>Fenstergröße zurücksetzen</value>
+  </data>
+  <data name="Settings_LinuxTerminal" xml:space="preserve">
+    <value>Linux-Terminal</value>
+  </data>
+  <data name="Settings_LinuxTerminal_Placeholder" xml:space="preserve">
+    <value>z. B. kitty, alacritty (leer lassen für automatisch)</value>
+  </data>
+  <data name="Settings_ConnectionsFile" xml:space="preserve">
+    <value>Verbindungsordner</value>
+  </data>
+  <data name="Settings_ConnectionsFile_Description" xml:space="preserve">
+    <value>In einem Cloud-Ordner speichern (z. B. OneDrive, Dropbox), um Verbindungen geräteübergreifend zu synchronisieren.</value>
+  </data>
+  <data name="Settings_ConnectionsFile_Placeholder" xml:space="preserve">
+    <value>Leer lassen für Standardordner</value>
+  </data>
+  <data name="Settings_ConnectionsFolder_InvalidPath" xml:space="preserve">
+    <value>Der Ordner existiert nicht.</value>
+  </data>
+  <data name="Settings_ConnectionsFile_ExistsTitle" xml:space="preserve">
+    <value>Datei existiert bereits</value>
+  </data>
+  <data name="Settings_ConnectionsFile_ExistsMessage" xml:space="preserve">
+    <value>Der gewählte Ordner enthält bereits 'LanaDelSsh.connections.json'. Mit der Datei vom aktuellen Speicherort überschreiben?</value>
+  </data>
+</root>
