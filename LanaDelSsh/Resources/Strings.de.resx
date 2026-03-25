@@ -182,11 +182,17 @@
   <data name="Settings_ConnectionsFolder_InvalidPath" xml:space="preserve">
     <value>Der Ordner existiert nicht.</value>
   </data>
-  <data name="Settings_ConnectionsFile_ExistsTitle" xml:space="preserve">
-    <value>Datei existiert bereits</value>
+  <data name="Settings_ConnectionsFile_ConflictTitle" xml:space="preserve">
+    <value>Dateikonflikt</value>
   </data>
-  <data name="Settings_ConnectionsFile_ExistsMessage" xml:space="preserve">
-    <value>Der gewählte Ordner enthält bereits 'LanaDelSsh.connections.json'. Mit der Datei vom aktuellen Speicherort überschreiben?</value>
+  <data name="Settings_ConnectionsFile_ConflictMessage" xml:space="preserve">
+    <value>Der gewählte Ordner enthält bereits eine Verbindungsdatei mit Daten. Welche Datei soll verwendet werden?</value>
+  </data>
+  <data name="Settings_ConnectionsFile_KeepLocal" xml:space="preserve">
+    <value>Lokale Datei behalten</value>
+  </data>
+  <data name="Settings_ConnectionsFile_KeepExisting" xml:space="preserve">
+    <value>Vorhandene Datei aus "{0}" verwenden</value>
   </data>
 
   <!-- Error: No terminal found -->

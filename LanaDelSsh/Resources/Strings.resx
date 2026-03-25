@@ -182,11 +182,17 @@
   <data name="Settings_ConnectionsFolder_InvalidPath" xml:space="preserve">
     <value>The folder does not exist.</value>
   </data>
-  <data name="Settings_ConnectionsFile_ExistsTitle" xml:space="preserve">
-    <value>File already exists</value>
+  <data name="Settings_ConnectionsFile_ConflictTitle" xml:space="preserve">
+    <value>File Conflict</value>
   </data>
-  <data name="Settings_ConnectionsFile_ExistsMessage" xml:space="preserve">
-    <value>The selected folder already contains 'LanaDelSsh.connections.json'. Overwrite it with the file from the current location?</value>
+  <data name="Settings_ConnectionsFile_ConflictMessage" xml:space="preserve">
+    <value>The selected folder already contains a connections file with data. Which file do you want to keep?</value>
+  </data>
+  <data name="Settings_ConnectionsFile_KeepLocal" xml:space="preserve">
+    <value>Keep local file</value>
+  </data>
+  <data name="Settings_ConnectionsFile_KeepExisting" xml:space="preserve">
+    <value>Use existing file from "{0}"</value>
   </data>
 
   <!-- Error: No terminal found -->

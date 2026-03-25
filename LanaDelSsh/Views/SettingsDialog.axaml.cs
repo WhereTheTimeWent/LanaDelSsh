@@ -1,12 +1,14 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using LanaDelSsh.Models;
 using LanaDelSsh.Services;
 using LanaDelSsh.ViewModels;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
 using System.IO;
+using System.Text.Json;
 
 namespace LanaDelSsh.Views;
 
@@ -41,32 +43,59 @@ public partial class SettingsDialog : Window
 
         if (currentFilePath == newFilePath) return;
 
-        if (File.Exists(currentFilePath))
-        {
-            if (File.Exists(newFilePath))
-            {
-                // Destination already has a file — ask before overwriting
-                var loc = LanaDelSsh.Localization.Loc.Instance;
-                var box = MessageBoxManager.GetMessageBoxCustom(new MessageBoxCustomParams
-                {
-                    ContentTitle = loc.Settings_ConnectionsFile_ExistsTitle,
-                    ContentMessage = loc.Settings_ConnectionsFile_ExistsMessage,
-                    Icon = MsBox.Avalonia.Enums.Icon.Question,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = loc.Confirm_Yes, IsDefault = true },
-                        new ButtonDefinition { Name = loc.Confirm_No, IsCancel = true }
-                    ]
-                });
-                var result = await box.ShowWindowDialogAsync(this);
-                if (result != loc.Confirm_Yes) return;
-            }
+        bool localHasData = FileHasConnections(currentFilePath);
+        bool destinationExists = File.Exists(newFilePath);
 
-            File.Move(currentFilePath, newFilePath, overwrite: true);
+        if (destinationExists && localHasData)
+        {
+            // Both files have data — ask which to keep
+            var loc = LanaDelSsh.Localization.Loc.Instance;
+            var folderName = new System.IO.DirectoryInfo(folder).Name;
+            var keepExistingLabel = string.Format(loc.Settings_ConnectionsFile_KeepExisting, folderName);
+            var box = MessageBoxManager.GetMessageBoxCustom(new MessageBoxCustomParams
+            {
+                ContentTitle = loc.Settings_ConnectionsFile_ConflictTitle,
+                ContentMessage = loc.Settings_ConnectionsFile_ConflictMessage,
+                Icon = MsBox.Avalonia.Enums.Icon.Question,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = loc.Settings_ConnectionsFile_KeepLocal, IsDefault = true },
+                    new ButtonDefinition { Name = keepExistingLabel },
+                    new ButtonDefinition { Name = loc.ConnectionEdit_Cancel, IsCancel = true }
+                ]
+            });
+            var result = await box.ShowWindowDialogAsync(this);
+
+            if (result == loc.ConnectionEdit_Cancel) return;
+            if (result == loc.Settings_ConnectionsFile_KeepLocal)
+                File.Move(currentFilePath, newFilePath, overwrite: true);
+            // else keepExistingLabel: just switch the folder, don't move anything
         }
+        else if (!destinationExists && localHasData)
+        {
+            // No conflict — move local file to new location
+            Directory.CreateDirectory(folder);
+            File.Move(currentFilePath, newFilePath);
+        }
+        // else: local is empty — just switch, nothing to move
 
         vm.ConnectionsFolder = folder;
+    }
+
+    private static bool FileHasConnections(string path)
+    {
+        if (!File.Exists(path)) return false;
+        try
+        {
+            var json = File.ReadAllText(path);
+            var list = JsonSerializer.Deserialize(json, AppJsonContext.Default.ListSshConnection);
+            return list is { Count: > 0 };
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private void OnResetWindowSizeClick(object? sender, RoutedEventArgs e)
