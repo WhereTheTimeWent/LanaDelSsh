@@ -23,15 +23,23 @@ jobs:
           - os: macos-14        # Apple Silicon
             rid: osx-arm64
             main-exe: LanaDelSsh
-            vpk-extra: ""
-          - os: macos-13        # Intel
+            vpk-extra: --icon LanaDelSsh/lana-del-ssh.icns
+          - os: macos-15-intel  # Intel
             rid: osx-x64
             main-exe: LanaDelSsh
-            vpk-extra: ""
+            vpk-extra: --icon LanaDelSsh/lana-del-ssh.icns
+          - os: windows-11-arm
+            rid: win-arm64
+            main-exe: LanaDelSsh.exe
+            vpk-extra: --icon LanaDelSsh/lana-del-ssh.ico
           - os: ubuntu-latest
             rid: linux-x64
             main-exe: LanaDelSsh
-            vpk-extra: ""
+            vpk-extra: --icon LanaDelSsh/lana-del-ssh.png
+          - os: ubuntu-24.04-arm
+            rid: linux-arm64
+            main-exe: LanaDelSsh
+            vpk-extra: --icon LanaDelSsh/lana-del-ssh.png
 
     runs-on: ${{ matrix.os }}
 
