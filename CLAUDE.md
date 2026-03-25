@@ -100,23 +100,15 @@ The app uses [Velopack](https://velopack.io) for installation and auto-updates. 
 
 ### Publishing a release
 
+Releases are fully automated via `.github/workflows/release.yml`. Pushing a version tag triggers builds for all platforms (win-x64, win-arm64, osx-arm64, osx-x64, linux-x64, linux-arm64) natively on GitHub-hosted runners, packs with Velopack, and creates a GitHub Release with all artifacts.
+
 ```bash
-# 1. Publish self-contained (R2R + trimmed)
-dotnet publish LanaDelSsh/LanaDelSsh.csproj -c Release -r win-x64 --self-contained \
-  -p:PublishReadyToRun=true -p:PublishTrimmed=true -o publish/win-x64
-
-# 2. Pack (keep Releases/ between versions — needed for delta generation)
-vpk pack --packId LanaDelSsh --packTitle "Lana Del Ssh" --packVersion 1.0.0 \
-  --packDir publish/win-x64 --mainExe LanaDelSsh.exe --icon LanaDelSsh/lana-del-ssh.ico
-
-# 3. Upload to GitHub Releases
-gh release create v1.0.0 Releases/* --title "v1.0.0"
+# Optionally create RELEASE_NOTES.md (ignored by git) for a custom release description
+git tag -a v1.2.3 -m "v1.2.3"
+git push origin v1.2.3
 ```
 
-For subsequent releases, keep the previous `.nupkg` in `Releases/` so Velopack can generate a delta package. If the folder is lost, recover with:
-```bash
-gh release download v1.0.0 --pattern "*.nupkg" --dir Releases
-```
+Delta packages are generated automatically — the workflow downloads the previous release's `.nupkg` before packing.
 
 ## Key Dependencies
 
