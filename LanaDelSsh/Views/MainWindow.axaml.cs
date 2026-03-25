@@ -1,12 +1,15 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using LanaDelSsh.ViewModels;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LanaDelSsh.Views;
@@ -79,13 +82,13 @@ public partial class MainWindow : Window
     private async void OnQuickConnectClick(object? sender, RoutedEventArgs e)
     {
         if (Vm?.QuickConnect is not null)
-            await ConnectSafeAsync(() => Vm.QuickConnect.ConnectAsync());
+            await ConnectSafeAsync(() => Vm.QuickConnect.ConnectAsync(), () => Vm.QuickConnect.LastLaunchedProcess);
     }
 
 private async void OnQuickConnectKeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter && Vm?.QuickConnect is not null)
-            await ConnectSafeAsync(() => Vm.QuickConnect.ConnectAsync());
+            await ConnectSafeAsync(() => Vm.QuickConnect.ConnectAsync(), () => Vm.QuickConnect.LastLaunchedProcess);
     }
 
     // ─── Saved Connections ───────────────────────────────────────────────────
@@ -93,7 +96,7 @@ private async void OnQuickConnectKeyDown(object? sender, KeyEventArgs e)
     private async void OnListBoxKeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter && Vm?.SavedConnections.SelectedConnection is not null)
-            await ConnectSafeAsync(() => Vm.SavedConnections.ConnectCommand.ExecuteAsync(null));
+            await ConnectSafeAsync(() => Vm.SavedConnections.ConnectCommand.ExecuteAsync(null), () => Vm.SavedConnections.LastLaunchedProcess);
         else if (e.Key == Key.Delete && Vm?.SavedConnections.SelectedConnection is not null)
             await OnDeleteAsync();
     }
@@ -101,7 +104,7 @@ private async void OnQuickConnectKeyDown(object? sender, KeyEventArgs e)
     private async void OnListBoxDoubleTapped(object? sender, TappedEventArgs e)
     {
         if (Vm?.SavedConnections.SelectedConnection is not null)
-            await ConnectSafeAsync(() => Vm.SavedConnections.ConnectCommand.ExecuteAsync(null));
+            await ConnectSafeAsync(() => Vm.SavedConnections.ConnectCommand.ExecuteAsync(null), () => Vm.SavedConnections.LastLaunchedProcess);
     }
 
     private async void OnAddClick(object? sender, RoutedEventArgs e)
@@ -190,11 +193,34 @@ private async void OnQuickConnectKeyDown(object? sender, KeyEventArgs e)
     private async void OnConnectClick(object? sender, RoutedEventArgs e)
     {
         if (Vm?.SavedConnections.SelectedConnection is null) return;
-        await ConnectSafeAsync(() => Vm.SavedConnections.ConnectCommand.ExecuteAsync(null));
+        await ConnectSafeAsync(() => Vm.SavedConnections.ConnectCommand.ExecuteAsync(null), () => Vm.SavedConnections.LastLaunchedProcess);
         FocusListBox();
     }
 
-    private async Task ConnectSafeAsync(Func<Task> connect)
+    private async void OnConnectKeepOpenClick(object? sender, RoutedEventArgs e)
+    {
+        if (Vm?.SavedConnections.SelectedConnection is null) return;
+        try
+        {
+            await Vm.SavedConnections.ConnectKeepOpenAsync();
+        }
+        catch (InvalidOperationException ex) when (ex.Message.StartsWith("No terminal emulator found"))
+        {
+            var loc = Localization.Loc.Instance;
+            var box = MessageBoxManager.GetMessageBoxCustom(new MessageBoxCustomParams
+            {
+                ContentTitle = loc.Error_NoTerminal_Title,
+                ContentMessage = loc.Error_NoTerminal_Message,
+                Icon = MsBox.Avalonia.Enums.Icon.Error,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ButtonDefinitions = [new ButtonDefinition { Name = loc.Error_Ok, IsDefault = true }]
+            });
+            await box.ShowWindowDialogAsync(this);
+        }
+        FocusListBox();
+    }
+
+    private async Task ConnectSafeAsync(Func<Task> connect, Func<Process?>? getProcess = null)
     {
         try
         {
@@ -212,7 +238,39 @@ private async void OnQuickConnectKeyDown(object? sender, KeyEventArgs e)
                 ButtonDefinitions = [new ButtonDefinition { Name = loc.Error_Ok, IsDefault = true }]
             });
             await box.ShowWindowDialogAsync(this);
+            return;
         }
+
+        if (getProcess != null)
+            _ = MonitorProcessAsync(getProcess());
+    }
+
+    private async Task MonitorProcessAsync(Process? process)
+    {
+        if (process == null) return;
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+            await process.WaitForExitAsync(cts.Token);
+            // Exited within 2 seconds — show hint on UI thread
+            await Dispatcher.UIThread.InvokeAsync(ShowQuickExitDialogAsync);
+        }
+        catch (OperationCanceledException) { /* Still running after 2s — normal */ }
+        catch { /* Process not accessible */ }
+    }
+
+    private async Task ShowQuickExitDialogAsync()
+    {
+        var loc = Localization.Loc.Instance;
+        var box = MessageBoxManager.GetMessageBoxCustom(new MessageBoxCustomParams
+        {
+            ContentTitle = loc.Connect_QuickExitTitle,
+            ContentMessage = loc.Connect_QuickExitMessage,
+            Icon = MsBox.Avalonia.Enums.Icon.Info,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            ButtonDefinitions = [new ButtonDefinition { Name = loc.Error_Ok, IsDefault = true }]
+        });
+        await box.ShowWindowDialogAsync(this);
     }
 
     private void OnPingClick(object? sender, RoutedEventArgs e)

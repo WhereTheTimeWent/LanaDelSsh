@@ -1,35 +1,55 @@
 using LanaDelSsh.Models;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace LanaDelSsh.Services;
 
 public class SshLaunchService : ISshLaunchService
 {
-    public void Connect(string host, int port, AppSettings settings)
+    public Process? Connect(string host, int port, AppSettings settings)
     {
-        // Build ssh arguments
-        var args = BuildSshArgs(host, port, settings);
+        var command = $"ssh {BuildSshArgs(host, port, settings)}";
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/c {command}",
+                UseShellExecute = true
+            });
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            LaunchMacTerminal(command, keepOpen: false);
+            return null; // 'open' exits immediately — not monitorable
+        }
+
+        LaunchLinuxTerminal(command, keepOpen: false, settings.LinuxTerminal);
+        return null; // terminal process model too complex to monitor reliably
+    }
+
+    public void ConnectKeepOpen(string host, int port, AppSettings settings)
+    {
+        var command = $"ssh {BuildSshArgs(host, port, settings)}";
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            // Launch cmd.exe which stays open after ssh exits
             Process.Start(new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = $"/c ssh {args}",
+                Arguments = $"/k {command}",
                 UseShellExecute = true
             });
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            LaunchMacTerminal($"ssh {args}");
+            LaunchMacTerminal(command, keepOpen: true);
         }
         else
         {
-            // Linux: try common terminal emulators in order
-            LaunchLinuxTerminal($"ssh {args}", settings.LinuxTerminal);
+            LaunchLinuxTerminal(command, keepOpen: true, settings.LinuxTerminal);
         }
     }
 
@@ -42,11 +62,13 @@ public class SshLaunchService : ISshLaunchService
         return $"{host}{portArg}{strictArg}";
     }
 
-    private static void LaunchMacTerminal(string command)
+    private static void LaunchMacTerminal(string command, bool keepOpen)
     {
-        // Write a temporary shell script and open it with Terminal.app
-        var script = System.IO.Path.GetTempFileName() + ".sh";
-        System.IO.File.WriteAllText(script, $"#!/bin/sh\n{command}\n");
+        var script = Path.GetTempFileName() + ".sh";
+        var content = keepOpen
+            ? $"#!/bin/sh\n{command}\nexec \"$SHELL\"\n"
+            : $"#!/bin/sh\n{command}\n";
+        File.WriteAllText(script, content);
         Process.Start("chmod", $"+x {script}")?.WaitForExit();
         Process.Start(new ProcessStartInfo
         {
@@ -56,7 +78,7 @@ public class SshLaunchService : ISshLaunchService
         });
     }
 
-    private static void LaunchLinuxTerminal(string command, string? customTerminal = null)
+    private static void LaunchLinuxTerminal(string command, bool keepOpen, string? customTerminal = null)
     {
         string[] candidates = string.IsNullOrWhiteSpace(customTerminal)
             ? ["x-terminal-emulator", "gnome-terminal", "xfce4-terminal", "konsole", "xterm"]
@@ -68,7 +90,10 @@ public class SshLaunchService : ISshLaunchService
             {
                 string termArgs = terminal switch
                 {
+                    // gnome-terminal already stays open via exec bash
                     "gnome-terminal" => $"-- bash -c \"{command}; exec bash\"",
+                    // Other terminals: use a temp script to avoid quoting issues
+                    _ when keepOpen => $"-e {WriteKeepOpenScript(command)}",
                     _ => $"-e \"{command}\""
                 };
 
@@ -88,5 +113,13 @@ public class SshLaunchService : ISshLaunchService
 
         throw new InvalidOperationException(
             $"No terminal emulator found. Tried: {string.Join(", ", candidates)}");
+    }
+
+    private static string WriteKeepOpenScript(string command)
+    {
+        var script = Path.GetTempFileName() + ".sh";
+        File.WriteAllText(script, $"#!/bin/sh\n{command}\nexec \"$SHELL\"\n");
+        try { Process.Start("chmod", $"+x {script}")?.WaitForExit(); } catch { }
+        return script;
     }
 }

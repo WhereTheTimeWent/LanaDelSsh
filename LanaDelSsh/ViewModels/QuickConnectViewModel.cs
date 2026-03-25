@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using LanaDelSsh.Localization;
 using LanaDelSsh.Models;
 using LanaDelSsh.Services;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace LanaDelSsh.ViewModels;
@@ -43,11 +44,13 @@ public partial class QuickConnectViewModel : ViewModelBase
     [RelayCommand]
     private void ClearHostInput() => HostInput = string.Empty;
 
+    public Process? LastLaunchedProcess { get; private set; }
+
     public async Task ConnectAsync()
     {
         if (!IsHostValid) return;
 
         var settings = await _settingsService.LoadAsync().ConfigureAwait(false);
-        _sshLaunchService.Connect(HostInput, Port, settings);
+        LastLaunchedProcess = _sshLaunchService.Connect(HostInput, Port, settings);
     }
 }

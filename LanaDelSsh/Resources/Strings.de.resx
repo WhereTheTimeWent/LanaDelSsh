@@ -77,8 +77,21 @@
   <data name="SavedConnections_Ping" xml:space="preserve">
     <value>Ping</value>
   </data>
+  <data name="SavedConnections_ConnectKeepOpen" xml:space="preserve">
+    <value>Verbinden (offen lassen)</value>
+  </data>
   <data name="SavedConnections_RemoveFromKnownHosts" xml:space="preserve">
     <value>Aus known__hosts entfernen</value>
+  </data>
+  <data name="Connect_QuickExitTitle" xml:space="preserve">
+    <value>Verbindung schnell beendet</value>
+  </data>
+  <data name="Connect_QuickExitMessage" xml:space="preserve">
+    <value>Das Terminal-Fenster schloss sich innerhalb von 2 Sekunden - das könnte auf einen Verbindungsfehler hinweisen.
+
+Hinweise:
+• Im Kontextmenü mit "Verbinden (offen lassen)" bleibt das Terminal nach dem Verbinden offen.
+• Falls SSH einen nicht übereinstimmenden Host-Key meldet, hilft "Aus known_hosts entfernen" im Kontextmenü.</value>
   </data>
   <data name="KnownHosts_RemovedTitle" xml:space="preserve">
     <value>Aus known_hosts entfernt</value>

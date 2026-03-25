@@ -131,6 +131,9 @@
 							<MenuItem Header="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Connect}"
 									  IsEnabled="{Binding HasSelection}"
 									  Click="OnConnectClick"/>
+							<MenuItem Header="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_ConnectKeepOpen}"
+									  IsEnabled="{Binding HasSelection}"
+									  Click="OnConnectKeepOpenClick"/>
 							<MenuItem Header="{Binding Source={x:Static loc:Loc.Instance}, Path=SavedConnections_Ping}"
 									  IsEnabled="{Binding HasSelection}"
 									  Click="OnPingClick"/>

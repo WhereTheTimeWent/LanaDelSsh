@@ -6,6 +6,7 @@ using LanaDelSsh.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -76,12 +77,21 @@ public partial class SavedConnectionsViewModel : ViewModelBase
         await _storageService.SaveAsync(models).ConfigureAwait(false);
     }
 
+    public Process? LastLaunchedProcess { get; private set; }
+
     [RelayCommand]
     private async Task ConnectAsync()
     {
         if (SelectedConnection is null) return;
         var settings = await _settingsService.LoadAsync().ConfigureAwait(false);
-        _sshLaunchService.Connect(SelectedConnection.Host, SelectedConnection.Port, settings);
+        LastLaunchedProcess = _sshLaunchService.Connect(SelectedConnection.Host, SelectedConnection.Port, settings);
+    }
+
+    public async Task ConnectKeepOpenAsync()
+    {
+        if (SelectedConnection is null) return;
+        var settings = await _settingsService.LoadAsync().ConfigureAwait(false);
+        _sshLaunchService.ConnectKeepOpen(SelectedConnection.Host, SelectedConnection.Port, settings);
     }
 
     [RelayCommand]

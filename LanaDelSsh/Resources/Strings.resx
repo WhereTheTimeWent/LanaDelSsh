@@ -77,8 +77,21 @@
   <data name="SavedConnections_Ping" xml:space="preserve">
     <value>Ping</value>
   </data>
+  <data name="SavedConnections_ConnectKeepOpen" xml:space="preserve">
+    <value>Connect (keep open)</value>
+  </data>
   <data name="SavedConnections_RemoveFromKnownHosts" xml:space="preserve">
     <value>Remove from known__hosts</value>
+  </data>
+  <data name="Connect_QuickExitTitle" xml:space="preserve">
+    <value>Connection ended quickly</value>
+  </data>
+  <data name="Connect_QuickExitMessage" xml:space="preserve">
+    <value>The terminal window closed within 2 seconds, which may indicate a connection error.
+
+Tips:
+• Use "Connect (keep open)" in the context menu to keep the terminal open after the session ends.
+• If SSH reports a host key mismatch, use "Remove from known_hosts" in the context menu.</value>
   </data>
   <data name="KnownHosts_RemovedTitle" xml:space="preserve">
     <value>Removed from known_hosts</value>
