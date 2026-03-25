@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 .claude/
 *.code-workspace
+RELEASE_NOTES.md

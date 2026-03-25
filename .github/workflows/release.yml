@@ -1,0 +1,113 @@
+name: Release
+
+# Triggered when a tag like "v1.2.3" is pushed
+on:
+  push:
+    tags:
+      - 'v*'
+
+# Allow the workflow to create GitHub Releases and upload files
+permissions:
+  contents: write
+
+jobs:
+  # ── Job 1: Build and pack on each platform ─────────────────────────────────
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+            main-exe: LanaDelSsh.exe
+            vpk-extra: --icon LanaDelSsh/lana-del-ssh.ico
+          - os: macos-14        # Apple Silicon
+            rid: osx-arm64
+            main-exe: LanaDelSsh
+            vpk-extra: ""
+          - os: macos-13        # Intel
+            rid: osx-x64
+            main-exe: LanaDelSsh
+            vpk-extra: ""
+          - os: ubuntu-latest
+            rid: linux-x64
+            main-exe: LanaDelSsh
+            vpk-extra: ""
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.x"
+
+      - name: Install Velopack CLI
+        shell: bash
+        run: dotnet tool install -g vpk
+
+      # "v1.2.3" → "1.2.3"
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: echo "VALUE=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      # Download previous .nupkg so Velopack can generate a delta package.
+      # Silently fails on the first release (|| true).
+      - name: Download previous release (for delta packages)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p Releases/${{ matrix.rid }}
+          gh release download --pattern "*.nupkg" \
+            --dir Releases/${{ matrix.rid }} || true
+
+      - name: Publish
+        shell: bash
+        run: |
+          dotnet publish LanaDelSsh/LanaDelSsh.csproj \
+            -c Release -r ${{ matrix.rid }} --self-contained \
+            -p:PublishReadyToRun=true -p:PublishTrimmed=true \
+            -o publish/${{ matrix.rid }}
+
+      - name: Pack with Velopack
+        shell: bash
+        run: |
+          vpk pack \
+            --packId LanaDelSsh \
+            --packTitle "Lana Del Ssh" \
+            --packVersion ${{ steps.version.outputs.VALUE }} \
+            --packDir publish/${{ matrix.rid }} \
+            --mainExe ${{ matrix.main-exe }} \
+            --outputDir Releases/${{ matrix.rid }} \
+            ${{ matrix.vpk-extra }}
+
+      # Transfer artifacts between jobs (each job runs in isolation)
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: releases-${{ matrix.rid }}
+          path: Releases/${{ matrix.rid }}/*
+
+  # ── Job 2: Create GitHub Release ───────────────────────────────────────────
+  release:
+    needs: build   # Wait until all build jobs have succeeded
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-releases
+          merge-multiple: true   # Merge into one directory instead of subdirectories
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          body_path: RELEASE_NOTES.md    # Optional Markdown file with release description
+          generate_release_notes: true   # Appends auto-generated changelog from commits
+          files: all-releases/*
