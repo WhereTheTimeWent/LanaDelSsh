@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using System;
 using LanaDelSsh.Models;
 using LanaDelSsh.Services;
 using LanaDelSsh.ViewModels;
@@ -96,6 +97,13 @@ public partial class SettingsDialog : Window
         {
             return false;
         }
+    }
+
+    private async void OnGitHubClick(object? sender, RoutedEventArgs e)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is not null)
+            await topLevel.Launcher.LaunchUriAsync(new Uri("https://github.com/WhereTheTimeWent/LanaDelSsh"));
     }
 
     private void OnResetWindowSizeClick(object? sender, RoutedEventArgs e)

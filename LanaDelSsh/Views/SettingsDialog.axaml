@@ -18,7 +18,7 @@
         </Style>
     </Window.Styles>
 
-    <Grid Margin="24" RowDefinitions="Auto,16,Auto,16,Auto,16,Auto,Auto,16,Auto,*,Auto">
+    <Grid Margin="24" RowDefinitions="Auto,16,Auto,16,Auto,16,Auto,Auto,16,Auto,*,Auto,16,Auto">
 
         <!-- Ignore Certificates -->
         <CheckBox Grid.Row="0"
@@ -99,8 +99,19 @@
                        TextWrapping="Wrap"/>
         </StackPanel>
 
+        <!-- About -->
+        <StackPanel Grid.Row="11" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+            <TextBlock IsVisible="{x:Static vm:SettingsViewModel.IsVelopackInstalled}"
+                       Text="{x:Static vm:SettingsViewModel.InstalledVersion}"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                       FontSize="12"/>
+            <Button Content="GitHub"
+                    Click="OnGitHubClick"/>
+        </StackPanel>
+
         <!-- Close Button -->
-        <Button Grid.Row="11"
+        <Button Grid.Row="13"
                 Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_Close}"
                 HorizontalAlignment="Right"
                 Width="100"

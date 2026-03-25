@@ -7,6 +7,8 @@ using LanaDelSsh.Services;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Velopack;
+using Velopack.Sources;
 
 namespace LanaDelSsh.ViewModels;
 
@@ -37,6 +39,19 @@ public partial class SettingsViewModel : ViewModelBase
     private string? _connectionsFolderError;
 
     public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+
+    public static string InstalledVersion { get; } = ComputeInstalledVersion();
+    public static bool IsVelopackInstalled => InstalledVersion.Length > 0;
+
+    private static string ComputeInstalledVersion()
+    {
+        try
+        {
+            var mgr = new UpdateManager(new GithubSource("https://github.com/WhereTheTimeWent/LanaDelSsh", null, false));
+            return mgr.IsInstalled ? $"v{mgr.CurrentVersion}" : string.Empty;
+        }
+        catch { return string.Empty; }
+    }
 
     public string CurrentConnectionsFilePath => _connectionStorageService.CurrentFilePath;
 
