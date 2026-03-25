@@ -6,15 +6,20 @@ namespace LanaDelSsh.Services;
 
 public class KnownHostsService : IKnownHostsService
 {
-    private static string KnownHostsPath => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-        ".ssh", "known_hosts");
+    private readonly string _knownHostsPath;
+
+    public KnownHostsService(string? knownHostsPath = null)
+    {
+        _knownHostsPath = knownHostsPath ?? Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            ".ssh", "known_hosts");
+    }
 
     public bool RemoveHost(string hostname, int port)
     {
         if (string.IsNullOrWhiteSpace(hostname)) return false;
 
-        var path = KnownHostsPath;
+        var path = _knownHostsPath;
         if (!File.Exists(path)) return false;
 
         string[] lines;
