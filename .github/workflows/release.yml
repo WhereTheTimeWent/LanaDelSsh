@@ -93,6 +93,13 @@ jobs:
             --outputDir Releases/${{ matrix.rid }} \
             ${{ matrix.vpk-extra }}
 
+      # Remove old nupkgs (downloaded for delta generation) — only upload current version
+      - name: Remove old nupkgs
+        shell: bash
+        run: |
+          find Releases/${{ matrix.rid }} -name "*.nupkg" \
+            ! -name "*-${{ steps.version.outputs.VALUE }}-*" -delete
+
       # Transfer artifacts between jobs (each job runs in isolation)
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
