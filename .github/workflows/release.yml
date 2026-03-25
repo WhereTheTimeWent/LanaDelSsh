@@ -118,7 +118,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-tags: true
+          fetch-depth: 0
 
       # Extract the annotated tag message (written via: git tag -a vX.Y.Z -F RELEASE_NOTES.md)
       - name: Read tag annotation
