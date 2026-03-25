@@ -84,4 +84,9 @@ public partial class Loc : ObservableObject
     public string Settings_ConnectionsFile_Placeholder => S("Settings_ConnectionsFile_Placeholder");
     public string Settings_ConnectionsFile_ExistsTitle => S("Settings_ConnectionsFile_ExistsTitle");
     public string Settings_ConnectionsFile_ExistsMessage => S("Settings_ConnectionsFile_ExistsMessage");
+
+    // Error dialogs
+    public string Error_NoTerminal_Title => S("Error_NoTerminal_Title");
+    public string Error_NoTerminal_Message => S("Error_NoTerminal_Message");
+    public string Error_Ok => S("Error_Ok");
 }

@@ -188,4 +188,15 @@
   <data name="Settings_ConnectionsFile_ExistsMessage" xml:space="preserve">
     <value>The selected folder already contains 'LanaDelSsh.connections.json'. Overwrite it with the file from the current location?</value>
   </data>
+
+  <!-- Error: No terminal found -->
+  <data name="Error_NoTerminal_Title" xml:space="preserve">
+    <value>No Terminal Found</value>
+  </data>
+  <data name="Error_NoTerminal_Message" xml:space="preserve">
+    <value>No terminal emulator could be found on your system. You can specify a custom terminal in Settings.</value>
+  </data>
+  <data name="Error_Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

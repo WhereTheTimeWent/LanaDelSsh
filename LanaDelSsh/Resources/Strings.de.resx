@@ -188,4 +188,15 @@
   <data name="Settings_ConnectionsFile_ExistsMessage" xml:space="preserve">
     <value>Der gewählte Ordner enthält bereits 'LanaDelSsh.connections.json'. Mit der Datei vom aktuellen Speicherort überschreiben?</value>
   </data>
+
+  <!-- Error: No terminal found -->
+  <data name="Error_NoTerminal_Title" xml:space="preserve">
+    <value>Kein Terminal gefunden</value>
+  </data>
+  <data name="Error_NoTerminal_Message" xml:space="preserve">
+    <value>Kein Terminal-Emulator gefunden. In den Einstellungen lässt sich ein Terminal hinterlegen.</value>
+  </data>
+  <data name="Error_Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

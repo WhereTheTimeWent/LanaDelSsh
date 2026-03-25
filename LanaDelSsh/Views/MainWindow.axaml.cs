@@ -5,6 +5,7 @@ using LanaDelSsh.ViewModels;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -78,13 +79,13 @@ public partial class MainWindow : Window
     private async void OnQuickConnectClick(object? sender, RoutedEventArgs e)
     {
         if (Vm?.QuickConnect is not null)
-            await Vm.QuickConnect.ConnectAsync();
+            await ConnectSafeAsync(() => Vm.QuickConnect.ConnectAsync());
     }
 
 private async void OnQuickConnectKeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter && Vm?.QuickConnect is not null)
-            await Vm.QuickConnect.ConnectAsync();
+            await ConnectSafeAsync(() => Vm.QuickConnect.ConnectAsync());
     }
 
     // ─── Saved Connections ───────────────────────────────────────────────────
@@ -92,7 +93,7 @@ private async void OnQuickConnectKeyDown(object? sender, KeyEventArgs e)
     private async void OnListBoxKeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter && Vm?.SavedConnections.SelectedConnection is not null)
-            await Vm.SavedConnections.ConnectCommand.ExecuteAsync(null);
+            await ConnectSafeAsync(() => Vm.SavedConnections.ConnectCommand.ExecuteAsync(null));
         else if (e.Key == Key.Delete && Vm?.SavedConnections.SelectedConnection is not null)
             await OnDeleteAsync();
     }
@@ -100,7 +101,7 @@ private async void OnQuickConnectKeyDown(object? sender, KeyEventArgs e)
     private async void OnListBoxDoubleTapped(object? sender, TappedEventArgs e)
     {
         if (Vm?.SavedConnections.SelectedConnection is not null)
-            await Vm.SavedConnections.ConnectCommand.ExecuteAsync(null);
+            await ConnectSafeAsync(() => Vm.SavedConnections.ConnectCommand.ExecuteAsync(null));
     }
 
     private async void OnAddClick(object? sender, RoutedEventArgs e)
@@ -189,8 +190,29 @@ private async void OnQuickConnectKeyDown(object? sender, KeyEventArgs e)
     private async void OnConnectClick(object? sender, RoutedEventArgs e)
     {
         if (Vm?.SavedConnections.SelectedConnection is null) return;
-        await Vm.SavedConnections.ConnectCommand.ExecuteAsync(null);
+        await ConnectSafeAsync(() => Vm.SavedConnections.ConnectCommand.ExecuteAsync(null));
         FocusListBox();
+    }
+
+    private async Task ConnectSafeAsync(Func<Task> connect)
+    {
+        try
+        {
+            await connect();
+        }
+        catch (InvalidOperationException ex) when (ex.Message.StartsWith("No terminal emulator found"))
+        {
+            var loc = Localization.Loc.Instance;
+            var box = MessageBoxManager.GetMessageBoxCustom(new MessageBoxCustomParams
+            {
+                ContentTitle = loc.Error_NoTerminal_Title,
+                ContentMessage = loc.Error_NoTerminal_Message,
+                Icon = MsBox.Avalonia.Enums.Icon.Error,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ButtonDefinitions = [new ButtonDefinition { Name = loc.Error_Ok, IsDefault = true }]
+            });
+            await box.ShowWindowDialogAsync(this);
+        }
     }
 
     private void OnPingClick(object? sender, RoutedEventArgs e)

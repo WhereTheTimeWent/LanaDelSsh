@@ -121,6 +121,7 @@ gh release download v1.0.0 --pattern "*.nupkg" --dir Releases
 
 - All code — variable names, method names, comments — must be written in **English**
 - The application UI is available in English and German (see `Resources/Strings.resx` and `Resources/Strings.de.resx`)
+- German UI strings must never use the formal "Sie" address. Prefer phrasing without any direct address; if unavoidable, use the informal "du"
 
 ## Avalonia-Specific Notes
 

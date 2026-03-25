@@ -1,4 +1,5 @@
 using LanaDelSsh.Models;
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -84,5 +85,8 @@ public class SshLaunchService : ISshLaunchService
                 // Try next terminal
             }
         }
+
+        throw new InvalidOperationException(
+            $"No terminal emulator found. Tried: {string.Join(", ", candidates)}");
     }
 }
