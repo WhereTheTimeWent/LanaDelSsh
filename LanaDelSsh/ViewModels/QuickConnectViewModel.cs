@@ -32,7 +32,7 @@ public partial class QuickConnectViewModel : ViewModelBase
         }
     }
 
-    public bool IsHostValid => HostInput.Contains('@');
+    public bool IsHostValid => HostInput.IndexOf('@') is var i && i >= 0 && i < HostInput.Length - 1;
     public bool ShowValidationError => HostInput.Length > 0 && !IsHostValid;
 
     public QuickConnectViewModel(ISshLaunchService sshLaunchService, ISettingsService settingsService)

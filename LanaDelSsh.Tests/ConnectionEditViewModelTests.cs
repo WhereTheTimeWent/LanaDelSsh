@@ -36,6 +36,13 @@ public class ConnectionEditViewModelTests
         Assert.True(vm.IsValid);
     }
 
+    [Fact]
+    public void IsValid_FalseWhenHostAtWithNothingAfter()
+    {
+        var vm = new ConnectionEditViewModel { Name = "prod", Host = "root@" };
+        Assert.False(vm.IsValid);
+    }
+
     // --- ShowHostError ---
 
     [Fact]
@@ -57,6 +64,13 @@ public class ConnectionEditViewModelTests
     {
         var vm = new ConnectionEditViewModel { Host = "user@host" };
         Assert.False(vm.ShowHostError);
+    }
+
+    [Fact]
+    public void ShowHostError_TrueWhenAtWithNothingAfter()
+    {
+        var vm = new ConnectionEditViewModel { Host = "root@" };
+        Assert.True(vm.ShowHostError);
     }
 
     // --- BuildModel ---

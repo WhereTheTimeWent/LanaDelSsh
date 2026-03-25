@@ -22,6 +22,14 @@ public class QuickConnectViewModelTests
     }
 
     [Fact]
+    public void IsHostValid_FalseWhenAtWithNothingAfter()
+    {
+        var vm = Create();
+        vm.HostInput = "root@";
+        Assert.False(vm.IsHostValid);
+    }
+
+    [Fact]
     public void IsHostValid_FalseWhenNoAt()
     {
         var vm = Create();
@@ -59,6 +67,14 @@ public class QuickConnectViewModelTests
         var vm = Create();
         vm.HostInput = "user@host";
         Assert.False(vm.ShowValidationError);
+    }
+
+    [Fact]
+    public void ShowValidationError_TrueWhenAtWithNothingAfter()
+    {
+        var vm = Create();
+        vm.HostInput = "root@";
+        Assert.True(vm.ShowValidationError);
     }
 
     // --- PortText ---

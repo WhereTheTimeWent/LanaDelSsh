@@ -18,9 +18,12 @@ public partial class ConnectionEditViewModel : ViewModelBase
     [ObservableProperty]
     private int _port = 22;
 
-    public bool IsValid => !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Host) && Host.Contains('@');
+    private static bool IsValidHost(string host) =>
+        host.IndexOf('@') is var i && i >= 0 && i < host.Length - 1;
 
-    public bool ShowHostError => !string.IsNullOrWhiteSpace(Host) && !Host.Contains('@');
+    public bool IsValid => !string.IsNullOrWhiteSpace(Name) && IsValidHost(Host);
+
+    public bool ShowHostError => !string.IsNullOrWhiteSpace(Host) && !IsValidHost(Host);
 
     public bool IsEditMode { get; }
 
