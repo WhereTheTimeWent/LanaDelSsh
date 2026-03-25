@@ -70,7 +70,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p Releases/${{ matrix.rid }}
-          gh release download --pattern "*.nupkg" \
+          gh release download --pattern "*-${{ matrix.rid }}-*.nupkg" \
             --dir Releases/${{ matrix.rid }} || true
 
       - name: Publish
@@ -87,9 +87,11 @@ jobs:
           vpk pack \
             --packId LanaDelSsh \
             --packTitle "Lana Del Ssh" \
+            --packAuthors "Where The Time Went" \
             --packVersion ${{ steps.version.outputs.VALUE }} \
             --packDir publish/${{ matrix.rid }} \
             --mainExe ${{ matrix.main-exe }} \
+            --channel ${{ matrix.rid }} \
             --outputDir Releases/${{ matrix.rid }} \
             ${{ matrix.vpk-extra }}
 
