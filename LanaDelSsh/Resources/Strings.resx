@@ -77,6 +77,27 @@
   <data name="SavedConnections_Ping" xml:space="preserve">
     <value>Ping</value>
   </data>
+  <data name="SavedConnections_RemoveFromKnownHosts" xml:space="preserve">
+    <value>Remove from known__hosts</value>
+  </data>
+  <data name="KnownHosts_RemovedTitle" xml:space="preserve">
+    <value>Removed from known_hosts</value>
+  </data>
+  <data name="KnownHosts_RemovedMessage" xml:space="preserve">
+    <value>The entry for '{0}' has been removed from known_hosts.</value>
+  </data>
+  <data name="KnownHosts_NotFoundTitle" xml:space="preserve">
+    <value>Not found in known_hosts</value>
+  </data>
+  <data name="KnownHosts_NotFoundMessage" xml:space="preserve">
+    <value>No entry for '{0}' was found in known_hosts.</value>
+  </data>
+  <data name="KnownHosts_ErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="KnownHosts_ErrorMessage" xml:space="preserve">
+    <value>The known_hosts file could not be accessed. Check that the file is readable and not locked.</value>
+  </data>
   <data name="SavedConnections_Search" xml:space="preserve">
     <value>Search by name or host…</value>
   </data>

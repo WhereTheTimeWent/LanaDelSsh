@@ -29,6 +29,7 @@ public partial class App : Application
             var connectionStorageService = new ConnectionStorageService();
             var sshLaunchService = new SshLaunchService();
             var pingService = new PingService();
+            var knownHostsService = new KnownHostsService();
 
             var settings = settingsService.LoadAsync().GetAwaiter().GetResult();
             ApplyTheme(settings);
@@ -39,7 +40,7 @@ public partial class App : Application
             // Compose view models
             var quickConnectVm = new QuickConnectViewModel(sshLaunchService, settingsService);
             var savedConnectionsVm = new SavedConnectionsViewModel(
-                connectionStorageService, sshLaunchService, pingService, settingsService);
+                connectionStorageService, sshLaunchService, pingService, settingsService, knownHostsService);
             var settingsVm = new SettingsViewModel(settingsService, connectionStorageService);
 
             var mainVm = new MainWindowViewModel(

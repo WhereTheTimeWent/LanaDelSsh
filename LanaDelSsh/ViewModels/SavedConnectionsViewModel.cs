@@ -17,6 +17,7 @@ public partial class SavedConnectionsViewModel : ViewModelBase
     private readonly ISshLaunchService _sshLaunchService;
     private readonly IPingService _pingService;
     private readonly ISettingsService _settingsService;
+    private readonly IKnownHostsService _knownHostsService;
 
     public ObservableCollection<SshConnectionViewModel> Connections { get; } = [];
 
@@ -44,12 +45,14 @@ public partial class SavedConnectionsViewModel : ViewModelBase
         IConnectionStorageService storageService,
         ISshLaunchService sshLaunchService,
         IPingService pingService,
-        ISettingsService settingsService)
+        ISettingsService settingsService,
+        IKnownHostsService knownHostsService)
     {
         _storageService = storageService;
         _sshLaunchService = sshLaunchService;
         _pingService = pingService;
         _settingsService = settingsService;
+        _knownHostsService = knownHostsService;
         storageService.FileChanged += OnStorageFileChanged;
         Connections.CollectionChanged += (_, _) => OnPropertyChanged(nameof(FilteredConnections));
     }
@@ -86,6 +89,15 @@ public partial class SavedConnectionsViewModel : ViewModelBase
     {
         if (SelectedConnection is null) return;
         _pingService.Ping(SelectedConnection.Host);
+    }
+
+    public bool RemoveSelectedFromKnownHosts()
+    {
+        if (SelectedConnection is null) return false;
+        var host = SelectedConnection.Host;
+        var atIndex = host.IndexOf('@');
+        var hostname = atIndex >= 0 ? host[(atIndex + 1)..] : host;
+        return _knownHostsService.RemoveHost(hostname, SelectedConnection.Port);
     }
 
     [RelayCommand]

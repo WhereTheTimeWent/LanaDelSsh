@@ -75,6 +75,16 @@ The project follows **MVVM** with manual dependency injection composed in `App.a
 
 Dialogs (`ConnectionEditDialog`, `SettingsDialog`) are opened from `MainWindow.axaml.cs` code-behind using `ShowDialog(this)`, not from the ViewModel. The ViewModel exposes state; the view drives the dialog lifecycle.
 
+### Connections Folder Conflict Logic
+
+When the user selects a new folder in Settings, `SettingsDialog.axaml.cs` decides what to do based on whether each file has data:
+
+- Local empty + destination exists → switch silently (adopt destination file, discard local)
+- Local has data + destination missing → move local file there
+- Both have data → three-button dialog: keep local / keep existing / cancel
+
+`FileHasConnections()` in the code-behind reads and deserialises the file to determine if it contains any entries.
+
 ### Cross-Platform SSH/Ping Launching
 
 `SshLaunchService` and `PingService` detect the OS via `RuntimeInformation.IsOSPlatform()`:
@@ -133,6 +143,7 @@ gh release download v1.0.0 --pattern "*.nupkg" --dir Releases
 - Use `DynamicResource` for theme-aware or runtime-swappable resources, `StaticResource` for fixed values
 - **`DynamicResource` removal does not reliably revert inline-bound properties to the theme default at runtime.** When a resource key is removed from `MergedDictionaries`, Avalonia sets any inline-bound property to `null` (not `UnsetValue`), leaving windows with a transparent background that renders white. The fix used here: after removing a design's `ResourceDictionary`, call `window.ClearValue(TemplatedControl.BackgroundProperty)` on every open window — `ClearValue` truly unsets the local value and lets FluentTheme's `ControlTheme` styling take over. At startup this issue does not appear because the resource was never found, so the property was never set in the first place. See `DesignService.ClearWindowBackgrounds`.
 - Do **not** use a global `Style Selector="Window"` setter for `AppWindowBackground` — an unresolved `DynamicResource` in a style setter strips the theme background the same way. Always bind inline on each `Window`.
+- **`MenuItem.Header` treats `_` as an access-key indicator.** To display a literal underscore (e.g. `known_hosts`), use `__` in the string resource. This only affects `MenuItem` headers — plain `TextBlock` and `MessageBox` content render `_` literally.
 
 ## MCP Server
 

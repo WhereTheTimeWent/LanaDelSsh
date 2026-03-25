@@ -222,6 +222,45 @@ private async void OnQuickConnectKeyDown(object? sender, KeyEventArgs e)
         FocusListBox();
     }
 
+    private async void OnRemoveFromKnownHostsClick(object? sender, RoutedEventArgs e)
+    {
+        var vm = Vm?.SavedConnections;
+        if (vm?.SelectedConnection is null) return;
+
+        var host = vm.SelectedConnection.Host ?? string.Empty;
+        var atIndex = host.IndexOf('@');
+        var hostname = atIndex >= 0 ? host[(atIndex + 1)..] : host;
+
+        var loc = Localization.Loc.Instance;
+        string title, message;
+        MsBox.Avalonia.Enums.Icon icon;
+
+        try
+        {
+            bool removed = vm.RemoveSelectedFromKnownHosts();
+            title = removed ? loc.KnownHosts_RemovedTitle : loc.KnownHosts_NotFoundTitle;
+            message = string.Format(removed ? loc.KnownHosts_RemovedMessage : loc.KnownHosts_NotFoundMessage, hostname);
+            icon = removed ? MsBox.Avalonia.Enums.Icon.Success : MsBox.Avalonia.Enums.Icon.Info;
+        }
+        catch (Exception)
+        {
+            title = loc.KnownHosts_ErrorTitle;
+            message = loc.KnownHosts_ErrorMessage;
+            icon = MsBox.Avalonia.Enums.Icon.Error;
+        }
+
+        var box = MessageBoxManager.GetMessageBoxCustom(new MessageBoxCustomParams
+        {
+            ContentTitle = title,
+            ContentMessage = message,
+            Icon = icon,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            ButtonDefinitions = [new ButtonDefinition { Name = loc.Error_Ok, IsDefault = true }]
+        });
+        await box.ShowWindowDialogAsync(this);
+        FocusListBox();
+    }
+
     private void FocusListBox()
     {
         Avalonia.Threading.Dispatcher.UIThread.Post(() =>

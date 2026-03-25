@@ -19,7 +19,8 @@ public class SavedConnectionsViewModelTests
             storage,
             Substitute.For<ISshLaunchService>(),
             Substitute.For<IPingService>(),
-            Substitute.For<ISettingsService>());
+            Substitute.For<ISettingsService>(),
+            Substitute.For<IKnownHostsService>());
     }
 
     private static SshConnectionViewModel Conn(string name, string host = "user@host") =>

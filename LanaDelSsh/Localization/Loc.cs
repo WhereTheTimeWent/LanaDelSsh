@@ -44,6 +44,13 @@ public partial class Loc : ObservableObject
     public string SavedConnections_Duplicate => S("SavedConnections_Duplicate");
     public string SavedConnections_Connect => S("SavedConnections_Connect");
     public string SavedConnections_Ping => S("SavedConnections_Ping");
+    public string SavedConnections_RemoveFromKnownHosts => S("SavedConnections_RemoveFromKnownHosts");
+    public string KnownHosts_RemovedTitle => S("KnownHosts_RemovedTitle");
+    public string KnownHosts_RemovedMessage => S("KnownHosts_RemovedMessage");
+    public string KnownHosts_NotFoundTitle => S("KnownHosts_NotFoundTitle");
+    public string KnownHosts_NotFoundMessage => S("KnownHosts_NotFoundMessage");
+    public string KnownHosts_ErrorTitle => S("KnownHosts_ErrorTitle");
+    public string KnownHosts_ErrorMessage => S("KnownHosts_ErrorMessage");
     public string SavedConnections_Search => S("SavedConnections_Search");
     public string SavedConnections_Empty => S("SavedConnections_Empty");
 
