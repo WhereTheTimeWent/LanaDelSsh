@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace LanaDelSsh.Services;
 
@@ -67,6 +68,27 @@ public class KnownHostsService : IKnownHostsService
         var expected = port == 22
             ? hostname
             : $"[{hostname}]:{port}";
-        return entry.Equals(expected, StringComparison.OrdinalIgnoreCase);
+
+        // Plain-text entry
+        if (!entry.StartsWith('|'))
+            return entry.Equals(expected, StringComparison.OrdinalIgnoreCase);
+
+        // Hashed entry: |1|<salt_base64>|<hash_base64>
+        var parts = entry.Split('|');
+        if (parts.Length != 4 || parts[1] != "1") return false;
+
+        byte[] salt, storedHash;
+        try
+        {
+            salt = Convert.FromBase64String(parts[2]);
+            storedHash = Convert.FromBase64String(parts[3]);
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+
+        var computed = HMACSHA1.HashData(salt, System.Text.Encoding.UTF8.GetBytes(expected));
+        return computed.AsSpan().SequenceEqual(storedHash);
     }
 }
