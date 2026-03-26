@@ -19,7 +19,7 @@
         </Style>
     </Window.Styles>
 
-    <Grid Margin="24" RowDefinitions="Auto,16,Auto,16,Auto,16,Auto,Auto,16,Auto,*,Auto,16,Auto">
+    <Grid Margin="24" RowDefinitions="Auto,16,Auto,16,Auto,16,Auto,Auto,16,Auto,16,Auto,16,Auto">
 
         <!-- Ignore Certificates -->
         <CheckBox Grid.Row="0"
