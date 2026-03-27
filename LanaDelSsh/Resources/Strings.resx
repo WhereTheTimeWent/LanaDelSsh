@@ -162,6 +162,9 @@ Tips:
   <data name="Settings_IgnoreCertificates" xml:space="preserve">
     <value>Ignore host key verification (adds -o StrictHostKeyChecking=no)</value>
   </data>
+  <data name="Settings_AutoUpdate" xml:space="preserve">
+    <value>Automatically check for and download updates</value>
+  </data>
   <data name="Settings_Theme" xml:space="preserve">
     <value>Theme</value>
   </data>

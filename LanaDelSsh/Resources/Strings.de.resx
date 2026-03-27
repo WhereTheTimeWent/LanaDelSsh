@@ -162,6 +162,9 @@ Hinweise:
   <data name="Settings_IgnoreCertificates" xml:space="preserve">
     <value>Host-Schlüsselprüfung ignorieren (fügt -o StrictHostKeyChecking=no hinzu)</value>
   </data>
+  <data name="Settings_AutoUpdate" xml:space="preserve">
+    <value>Updates automatisch suchen und herunterladen</value>
+  </data>
   <data name="Settings_Theme" xml:space="preserve">
     <value>Design</value>
   </data>

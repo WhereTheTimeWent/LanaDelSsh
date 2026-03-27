@@ -21,10 +21,13 @@
 
     <Grid Margin="24" RowDefinitions="Auto,16,Auto,16,Auto,16,Auto,Auto,16,Auto,16,Auto,16,Auto">
 
-        <!-- Ignore Certificates -->
-        <CheckBox Grid.Row="0"
-                  IsChecked="{Binding IgnoreCertificates}"
-                  Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_IgnoreCertificates}"/>
+        <!-- Ignore Certificates & Auto Update -->
+        <StackPanel Grid.Row="0" Orientation="Vertical" Spacing="4">
+            <CheckBox IsChecked="{Binding IgnoreCertificates}"
+                      Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_IgnoreCertificates}"/>
+            <CheckBox IsChecked="{Binding AutoUpdate}"
+                      Content="{Binding Source={x:Static loc:Loc.Instance}, Path=Settings_AutoUpdate}"/>
+        </StackPanel>
 
         <!-- Theme -->
         <StackPanel Grid.Row="2" Orientation="Vertical" Spacing="4">

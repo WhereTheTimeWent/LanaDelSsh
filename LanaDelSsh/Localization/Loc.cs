@@ -75,6 +75,7 @@ public partial class Loc : ObservableObject
     // Settings Dialog
     public string Settings_Title => S("Settings_Title");
     public string Settings_IgnoreCertificates => S("Settings_IgnoreCertificates");
+    public string Settings_AutoUpdate => S("Settings_AutoUpdate");
     public string Settings_Theme => S("Settings_Theme");
     public string Settings_Theme_Auto => S("Settings_Theme_Auto");
     public string Settings_Theme_Dark => S("Settings_Theme_Dark");

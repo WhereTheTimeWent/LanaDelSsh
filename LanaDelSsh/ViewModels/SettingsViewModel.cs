@@ -21,6 +21,9 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty]
     private bool _ignoreCertificates;
 
+    [ObservableProperty]
+    private bool _autoUpdate;
+
     /// <summary>0 = Auto, 1 = English, 2 = German</summary>
     [ObservableProperty]
     private int _selectedLanguageIndex;
@@ -68,6 +71,7 @@ public partial class SettingsViewModel : ViewModelBase
         _cachedSettings = settings;
         _isLoading = true;
         IgnoreCertificates = settings.IgnoreCertificates;
+        AutoUpdate = settings.AutoUpdate;
         LinuxTerminal = settings.LinuxTerminal;
         ConnectionsFolder = settings.ConnectionsFolder;
         SelectedLanguageIndex = settings.LanguageCode switch
@@ -88,6 +92,7 @@ public partial class SettingsViewModel : ViewModelBase
     }
 
     partial void OnIgnoreCertificatesChanged(bool value) => _ = SaveAsync();
+    partial void OnAutoUpdateChanged(bool value) => _ = SaveAsync();
     partial void OnSelectedLanguageIndexChanged(int value) => _ = ApplyLanguageAndSaveAsync(value);
     partial void OnSelectedThemeIndexChanged(int value) => _ = ApplyThemeAndSaveAsync(value);
     partial void OnLinuxTerminalChanged(string? value) => _ = SaveAsync();
@@ -182,6 +187,7 @@ public partial class SettingsViewModel : ViewModelBase
     {
         if (_isLoading) return;
         _cachedSettings.IgnoreCertificates = IgnoreCertificates;
+        _cachedSettings.AutoUpdate = AutoUpdate;
         _cachedSettings.LanguageCode = SelectedLanguageIndex switch
         {
             1 => "en",

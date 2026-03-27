@@ -37,7 +37,8 @@ public partial class MainWindowViewModel : ViewModelBase
         await Settings.LoadAsync(appSettings).ConfigureAwait(false);
         await SavedConnections.LoadAsync().ConfigureAwait(false);
 
-        _ = CheckForUpdatesAsync();
+        if (appSettings.AutoUpdate)
+            _ = CheckForUpdatesAsync();
     }
 
     private static async Task CheckForUpdatesAsync()

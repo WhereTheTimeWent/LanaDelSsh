@@ -4,6 +4,8 @@ public class AppSettings
 {
     public bool IgnoreCertificates { get; set; } = true;
 
+    public bool AutoUpdate { get; set; } = true;
+
     /// <summary>
     /// null = auto-detect from system, "en" = English, "de" = German
     /// </summary>
