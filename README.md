@@ -4,8 +4,6 @@
 
 **A cross-platform SSH connection manager** — save, organize, and launch SSH sessions with a single click. Built with C# and Avalonia UI.
 
-<br clear="left"/>
-
 ---
 
 ## Download
